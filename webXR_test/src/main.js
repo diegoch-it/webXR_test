@@ -53,7 +53,7 @@ async function startAR() {
             {
                 images: [
                     {
-                        src: "./furniture.png", // Updated to match your actual file
+                        src: "./furniture.jpg", // Updated to match your actual file
                         estimatedRealWorldWidth: 0.2 // 20cm width - adjust based on your actual image size
                     }
                 ]
