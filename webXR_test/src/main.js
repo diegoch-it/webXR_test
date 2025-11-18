@@ -67,14 +67,15 @@ async function startAR() {
         
         // Load the 3D model
         try {
-            const result = await BABYLON.SceneLoader.ImportMeshAsync(
-                "",
-                "./", 
-                "arm_chair__furniture.glb", // Updated to match your actual file
+            const container = await BABYLON.SceneLoader.LoadAssetContainerAsync(
+                "", 
+                "arm_chair__furniture.glb", // ensures GH Pages works
                 scene
             );
-            
-            modelMesh = result.meshes[0];
+            container.addAllToScene();  
+
+            modelMesh = container.meshes[0];
+            modelMesh.scaling = new BABYLON.Vector3(1, 1, 1);
             modelMesh.setEnabled(false); // Hide initially
             
             console.log("Model loaded successfully");
