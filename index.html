@@ -2,95 +2,195 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Test 10 - WebXR Image Tracking Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR.js Image Tracking Demo</title>
+    
+    <!-- AR.js and A-Frame libraries -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.js"></script>
+    
     <style>
-        * {
+        body {
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
         
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        
-        #renderCanvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-            touch-action: none;
-        }
-        
-        #startButton {
+        #loading {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px 40px;
-            font-size: 18px;
-            background-color: #4CAF50;
+            background: rgba(0, 0, 0, 0.8);
             color: white;
-            border: none;
+            padding: 20px;
             border-radius: 10px;
-            cursor: pointer;
-            z-index: 100;
-            font-family: Arial, sans-serif;
+            text-align: center;
+            z-index: 9999;
         }
         
-        #startButton:hover {
-            background-color: #45a049;
-        }
-        
-        #info {
+        #instructions {
             position: fixed;
-            top: 10px;
-            left: 10px;
-            color: white;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            text-align: center;
+        }
+        
+        #debug {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
             padding: 10px;
             border-radius: 5px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            z-index: 50;
-            display: none;
-        }
-        
-        .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #333;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            z-index: 90;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 1000;
         }
     </style>
-  <script type="module" crossorigin src="/webXR_test/assets/index-Cmt_BMVa.js"></script>
-  <link rel="modulepreload" crossorigin href="/webXR_test/assets/babylon-PRAofyDn.js">
 </head>
 <body>
     <!-- Loading indicator -->
-    <div id="loading" class="loading">
+    <div id="loading">
         <h2>Loading AR Experience...</h2>
-        <p>Please wait while we initialize the camera and load assets.</p>
+        <p>Point your camera at the target image when ready</p>
     </div>
     
-    <!-- Start AR button (will be shown after loading) -->
-    <button id="startButton" style="display: none;">Start AR Session</button>
-    
-    <!-- Info panel -->
-    <div id="info">
-        Point your camera at the target image
+    <!-- Instructions -->
+    <div id="instructions" style="display: none;">
+        Point camera at target image
     </div>
     
-    <!-- Babylon.js canvas -->
-    <canvas id="canvas"></canvas>
+    <!-- Debug info -->
+    <div id="debug"></div>
     
-    <!-- Load main script -->
+    <!-- A-Frame AR Scene -->
+    <a-scene
+        id="arScene"
+        embedded
+        arjs="sourceType: webcam; 
+              debugUIEnabled: false; 
+              detectionMode: mono_and_matrix; 
+              matrixCodeType: 3x3;
+              patternRatio: 0.8;
+              trackingMethod: best;
+              sourceWidth: 1280;
+              sourceHeight: 960;
+              displayWidth: 1280;
+              displayHeight: 960;"
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: medium;"
+        loading-screen="enabled: false">
+        
+        <!-- Assets -->
+        <a-assets>
+            <!-- Your 3D model -->
+            <a-asset-item id="chairModel" src="./arm_chair__furniture.glb"></a-asset-item>
+        </a-assets>
+        
+        <!-- AR Marker tracking the image -->
+        <a-marker
+            id="imageMarker"
+            type="pattern"
+            preset="custom"
+            url="./test_img.patt"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse"
+            smooth="true"
+            smoothCount="10"
+            smoothTolerance="0.01"
+            smoothThreshold="5">
+            
+            <!-- 3D Model positioned on the marker -->
+            <a-gltf-model 
+                id="chair"
+                src="#chairModel"
+                position="0 0 0"
+                scale="0.1 0.1 0.1"
+                rotation="0 0 0"
+                class="clickable"
+                animation__float="property: position; 
+                                 to: 0 0.02 0; 
+                                 from: 0 -0.02 0; 
+                                 dir: alternate; 
+                                 dur: 2000; 
+                                 loop: true;
+                                 easing: easeInOutSine;">
+            </a-gltf-model>
+            
+            <!-- Optional: Add text label -->
+            <a-text 
+                value="AR Furniture"
+                position="0 0.3 0"
+                align="center"
+                color="white"
+                scale="0.5 0.5 0.5">
+            </a-text>
+            
+        </a-marker>
+        
+        <!-- Camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // Debug logging
+        function debug(message) {
+            const debugEl = document.getElementById('debug');
+            const timestamp = new Date().toLocaleTimeString();
+            debugEl.innerHTML += `[${timestamp}] ${message}<br>`;
+            console.log(message);
+        }
+        
+        // AR.js event handlers
+        const marker = document.getElementById('imageMarker');
+        const chair = document.getElementById('chair');
+        const loading = document.getElementById('loading');
+        const instructions = document.getElementById('instructions');
+        
+        // When AR.js is ready
+        window.addEventListener('arjs-video-loaded', () => {
+            debug('Camera loaded');
+            loading.style.display = 'none';
+            instructions.style.display = 'block';
+        });
+        
+        // When marker is found
+        marker.addEventListener('markerFound', () => {
+            debug('Marker found - showing model');
+            instructions.innerHTML = 'Marker tracked! Tap model to rotate';
+        });
+        
+        // When marker is lost
+        marker.addEventListener('markerLost', () => {
+            debug('Marker lost');
+            instructions.innerHTML = 'Point camera at target image';
+        });
+        
+        // Click/tap interaction
+        chair.addEventListener('click', () => {
+            debug('Model clicked - rotating');
+            // Get current rotation
+            const currentY = chair.getAttribute('rotation').y;
+            // Add 45 degrees
+            chair.setAttribute('rotation', `0 ${currentY + 45} 0`);
+        });
+        
+        // Error handling
+        window.addEventListener('error', (e) => {
+            debug('Error: ' + e.message);
+        });
+        
+        // AR.js initialization
+        debug('AR.js initializing...');
+    </script>
 </body>
 </html>
