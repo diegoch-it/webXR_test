@@ -72,17 +72,20 @@
     <!-- Debug info -->
     <div id="debug"></div>
 
-    <a-scene>
+    <a-scene
+        embedded
+        arjs="sourceType: webcam; debugUIEnabled: false;">
         <!-- Add this simple box that should ALWAYS be visible -->
-        <a-box 
-            position="0 1.6 -3" 
-            width="1" 
-            height="1" 
-            depth="1" 
-            color="red" 
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 4000">
-        </a-box>
-        
+        <a-marker preset="hiro"
+            <a-box 
+                position="0 1.6 -3" 
+                width="1" 
+                height="0.5" 
+                depth="1" 
+                color="red" 
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 4000">
+            </a-box>
+        </a-marker>  
         <a-camera></a-camera>
     </a-scene>
     <script>
