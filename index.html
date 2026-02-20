@@ -14,18 +14,8 @@
     </head>
     <body style="margin: 0px 0px 0px -335.5px; overflow: hidden; height: 812px; width: 1082.67px;">
         <a-scene embedded="" arjs="" inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
-            <a-marker id="imageMarker"
-            type="pattern"
-            preset="custom"
-            url="./test_img.patt"
-            raycaster="objects: .clickable"
-            emitevents="true"
-            cursor="fuse: false; rayOrigin: mouse"
-            smooth="true"
-            smoothCount="10"
-            smoothTolerance="0.01"
-            smoothThreshold="5">>
-                <a-entity position="0 0 0" rotation="0 0 0" scale="0.05 0.05 0.05" gltf-model="./arm_chair_furniture.glb"></a-entity>
+            <a-marker preset="hiro" material="" arjs-anchor="" arjs-hit-testing="">
+                <a-entity position="0 0 0" rotation="0 0 0" scale="0.05 0.05 0.05" gltf-model="./arm_chair__furniture.glb"></a-entity>
             </a-marker>
             <a-entity camera=""></a-entity>
             <canvas class="a-canvas" data-aframe-canvas="true" data-engine="three.js r137" width="1918" height="1438"></canvas>
