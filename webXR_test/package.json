@@ -1,5 +1,5 @@
 {
-  "name": "webxr-image-tracking",
+  "name": "webxr-arjs-conversion",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -8,10 +8,6 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "vite build && gh-pages -d dist"
-  },
-  "dependencies": {
-    "@babylonjs/core": "^6.38.0",
-    "@babylonjs/loaders": "^6.38.0"
   },
   "devDependencies": {
     "vite": "^5.0.0",
