@@ -1,7 +1,4 @@
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.6.0/dist/aframe-master.min.js"></script>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 
 <style>
   .arjs-loader {
@@ -55,5 +52,20 @@
       fetch('./trex/trex-image/trex.fset')
         .then(response => console.log('NFT files found:', response.status))
         .catch(error => console.error('NFT files missing:', error));
+      
+        // Remove loading screen manually if AR.js doesn't do it
+      setTimeout(() => {
+          const loader = document.querySelector('.arjs-loader');
+          if (loader) {
+              loader.style.display = 'none';
+          }
+      }, 10000); // Remove after 10 seconds max
+
+      // Also listen for AR.js events
+      document.addEventListener('arjs-nft-loaded', () => {
+          console.log('NFT loaded successfully');
+          const loader = document.querySelector('.arjs-loader');
+          if (loader) loader.style.display = 'none';
+      });
     </script>
 </body>
