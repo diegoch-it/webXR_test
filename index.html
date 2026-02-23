@@ -38,7 +38,7 @@
         <!-- use rawgithack to retrieve the correct url for nft marker (see 'pinball' below) -->
         <a-nft 
             type="nft" 
-            url="./trex/trex-image/trexV2" 
+            url="./trex/trex-image/trex" 
             smooth="true" smoothcount="10" smoothtolerance="0.01" smooththreshold="5" material="" arjs-anchor="" arjs-hit-testing="">
             <a-entity
                 gltf-model='./trex/scene.gltf'
@@ -54,17 +54,10 @@
     </a-scene>
     <video autoplay="" muted="" playsinline="" id="arjs-video" style="width: 609px; height: 812px; position: absolute; top: 0px; left: 0px; z-index: -2; margin-left: -99px; margin-top: 0px;"></video>
     <script>
-      fetch('./trex/trex-image/trexV2.fset')
+      fetch('./trex/trex-image/trex.fset')
         .then(response => console.log('NFT files found:', response.status))
         .catch(error => console.error('NFT files missing:', error));
-      
-        // Remove loading screen manually if AR.js doesn't do it
-      setTimeout(() => {
-          const loader = document.querySelector('.arjs-loader');
-          if (loader) {
-              loader.style.display = 'none';
-          }
-      }, 10000); // Remove after 10 seconds max
+    
 
       // Also listen for AR.js events
       document.addEventListener('arjs-nft-loaded', () => {
@@ -72,5 +65,19 @@
           const loader = document.querySelector('.arjs-loader');
           if (loader) loader.style.display = 'none';
       });
+
+      const scene = document.querySelector('a-scene');
+      scene.addEventListener('arjs-nft-init-data', (e) => {
+          console.log('NFT init data loaded');
+      });
+
+      // Check if files actually exist and are the right size
+      fetch('./trex/trex-image/trexV2.fset')
+          .then(response => {
+              console.log('fset status:', response.status, 'size:', response.headers.get('content-length'));
+              return response.blob();
+          })
+          .then(blob => console.log('fset blob size:', blob.size))
+          .catch(error => console.error('fset error:', error));
     </script>
 </body>
